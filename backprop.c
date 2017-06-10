@@ -190,7 +190,6 @@ dataset_t dataset[ ] = {
 
 #define sigmoid( x )    ( 1.0 / ( 1.0 + exp( -x ) ) )
 #define sigmoid_d( x )  ( x * ( 1.0 - x ) )
-#define sqr( x )        ( x * x )
 
 // Initialize the network with random weights.
 void NN_Initialize( void )
@@ -310,20 +309,6 @@ void NN_Backpropagate( int test )
 
 }
 
-// Calculate the MSE for the desired output.
-double MSE_Calculate( int test )
-{
-   double mse = 0.0;
-   int i;
-
-   for ( i = 0 ; i < OUT_NEURONS ; i++ )
-   {
-      mse += sqr( ( dataset[ test ].output[ i ] - outputs[ i ] ) );
-   }
-
-   return mse;
-}
-
 // Set the test input vector.
 void NN_Set_Inputs( int test )
 {
@@ -338,12 +323,11 @@ void NN_Set_Inputs( int test )
 }
 
 // Train the network from the test vectors.
-void NN_Train( double min_mse )
+void NN_Train( int iterations )
 {
-   double mse;
    int test;
 
-   do
+   for ( int i = 0 ; i < iterations ; i++ )
    {
       test = getRand( MAX_TESTS );
 
@@ -352,12 +336,7 @@ void NN_Train( double min_mse )
       (void)NN_Feed_Forward( );
 
       NN_Backpropagate( test );
-
-      mse = MSE_Calculate( test );
-
-      printf( "mse = %g\n", mse );
-
-   } while ( mse > min_mse );
+   }
 
    return;
 }
@@ -375,8 +354,7 @@ void NN_Test( int tests )
 
       result = NN_Feed_Forward( );
 
-      printf( "Test %d classifed as %d\n", test, result );
-      printf( "Test %d outputs %g %g %g\n", test, 
+      printf( "Test %d classifed as %d (%g %g %g)\n", test, result,
                dataset[test].output[0],
                dataset[test].output[1],
                dataset[test].output[2] );
@@ -392,7 +370,7 @@ int main( void )
 
    NN_Initialize( );
 
-   NN_Train( 0.0001 );
+   NN_Train( 30000 );
 
    NN_Test( 10 );
 
