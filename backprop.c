@@ -7,7 +7,7 @@
 #define HID_NEURONS   25
 #define OUT_NEURONS    3
 
-#define RHO 0.05
+#define LEARNING_RATE 0.05
 
 // Neuron cell values
 double inputs[ INP_NEURONS+1 ];
@@ -294,7 +294,7 @@ void NN_Backpropagate( int test )
    {
       for ( hid = 0 ; hid < HID_NEURONS ; hid++ )
       {
-         weights_output_hidden[ out ][ hid ] += RHO * err_out[ out ] * hidden[ hid ];
+         weights_output_hidden[ out ][ hid ] += LEARNING_RATE * err_out[ out ] * hidden[ hid ];
       }
    }
 
@@ -303,7 +303,7 @@ void NN_Backpropagate( int test )
    {
       for ( inp = 0 ; inp < INP_NEURONS+1 ; inp++ )
       {
-         weights_hidden_input[ hid ][ inp ] += RHO * err_hid[ hid ] * inputs[ inp ];
+         weights_hidden_input[ hid ][ inp ] += LEARNING_RATE * err_hid[ hid ] * inputs[ inp ];
       }
    }
 
